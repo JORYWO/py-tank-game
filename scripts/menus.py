@@ -1,5 +1,5 @@
 import pygame, sys, webbrowser
-from scripts.settings import MID_W, WINDOW_SIZE, WHITE, BLACK, DEATH_TEXT_COLOUR, MID_W, MID_H
+from scripts.settings import MID_W, WINDOW_SIZE, WHITE, BLACK, DEATH_TEXT_COLOUR, MID_W, MID_H, play_menu_select_sound
 
 
 class Menu():
@@ -67,14 +67,18 @@ class MainMenu(Menu):
         self.move_cursor()
         if self.game.click:
             if self.start_rect.collidepoint((self.game.mx,self.game.my)):
+                play_menu_select_sound()
                 self.game.playing = True
                 self.game.setup()
             elif self.credits_rect.collidepoint((self.game.mx,self.game.my)):
+                play_menu_select_sound()
                 self.game.curr_menu = self.game.credits
             elif self.exit_rect.collidepoint((self.game.mx,self.game.my)):
+                play_menu_select_sound(0.5)
                 pygame.quit()
                 sys.exit()
         elif self.game.BACK_KEY:
+            play_menu_select_sound(0.5)
             pygame.quit()
             sys.exit()
         self.run_display = False
@@ -96,6 +100,7 @@ class CreditsMenu(Menu):
             self.game.check_events()
             self.check_input()
             if self.game.BACK_KEY:
+                play_menu_select_sound()
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
             self.game.display.fill(BLACK)
@@ -124,8 +129,10 @@ class CreditsMenu(Menu):
         self.move_cursor()
         if self.game.click:
             if self.font_rect.collidepoint((self.game.mx,self.game.my)):
+                play_menu_select_sound()
                 webbrowser.open("https://www.dafont.com/minecraft.font", new = 2)
             elif self.code.collidepoint((self.game.mx,self.game.my)):
+                play_menu_select_sound()
                 webbrowser.open("https://www.youtube.com/watch?v=wNMRq_uoWM0", new = 2)
                 webbrowser.open("https://www.youtube.com/watch?v=a5JWrd7Y_14", new = 2)
 
@@ -152,10 +159,12 @@ class DeathScreen(Menu):
 
     def check_input(self):
         if self.game.click:
+            play_menu_select_sound()
             self.game.curr_menu = self.game.main_menu #set the last screen to main menu so when user presses esc they return to main menu
             self.game.playing = True
             self.game.setup()
             self.run_display = False
         if self.game.BACK_KEY:
+            play_menu_select_sound(0.5)
             pygame.quit()
             sys.exit()

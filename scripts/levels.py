@@ -15,7 +15,9 @@ class Level:
     def __init__(self, level_data, surface):
         self.display_surface = surface
         self.screen_shake_timer = 0
-        self.ui = Ui(self.display_surface) 
+        self.ui = Ui(self.display_surface)
+        self.collision_sound = pygame.mixer.Sound("data/sounds/playerCollision.wav")
+        self.collision_sound.set_volume(0.5) 
 
         #player
         player_layout = import_csv_layout(level_data["player"])
@@ -150,12 +152,14 @@ class Level:
                 player.health -= enemy.damage
                 self.screen_shake_timer = enemy.size // 1.5
                 self.enemy_list.pop(i)
+                pygame.mixer.Sound.play(self.collision_sound)
 
         for j, proj in sorted(enumerate(player.projectiles), reverse=True):
             if proj.rect.colliderect(player.rect) and proj.collision_num:
                 player.health -= proj.damage
                 player.projectiles.pop(j)
                 self.screen_shake_timer = 12
+                pygame.mixer.Sound.play(self.collision_sound)
 
     #draw and update sparks
     def update_sparks(self):

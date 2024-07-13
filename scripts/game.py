@@ -3,7 +3,7 @@ from pygame.locals import *
 from scripts.levels import Level
 from scripts.gameData import endless
 from scripts.menus import *
-from scripts.settings import FPS, BLACK, FONT
+from scripts.settings import FPS, BLACK, FONT, play_menu_select_sound
 
 clock = pygame.time.Clock()
 
@@ -25,6 +25,7 @@ class Game:
         while self.playing and self.player_alive:
             self.check_events()
             if self.BACK_KEY:
+                play_menu_select_sound()
                 self.playing, self.player_alive = False, True
             self.display.fill(BLACK)
             self.player_alive, self.final_score = self.level.run(int(clock.get_fps()))
