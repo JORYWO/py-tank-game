@@ -1,5 +1,7 @@
 import pygame, math
 
+pygame.mixer.init()
+
 WINDOW_SIZE = (1280 , 720)  
 MID_W, MID_H = WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2
 FPS = 60
@@ -20,7 +22,15 @@ DEATH_TEXT_COLOUR = (89, 9, 23)
 NORMAL_ENEMY_COLOUR = (139, 64, 0)
 TRACKER_ENEMY_COLOUR = (54, 2, 10)
 
+menu_select_sound = pygame.mixer.Sound("data/sounds/menuSelect.wav")
+menu_select_sound.set_volume(0.5)
+
 #get angle between two points
 def get_angle(coord1, coord2):
     angle = math.atan2(coord1[1] - coord2[1], coord1[0] - coord2[0]) #get angle of mouse in radians.
     return angle
+
+#play the menu select sound on click
+def play_menu_select_sound(delay=0):
+    pygame.mixer.Sound.play(menu_select_sound)
+    pygame.time.delay(int(delay * 1000))

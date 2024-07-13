@@ -29,6 +29,8 @@ class Player(pygame.sprite.Sprite):
         self.cooldown = 0
         self.shooting = False
         self.turret_index = 0
+        self.shoot_sound = pygame.mixer.Sound("data/sounds/playerShot.wav")
+        self.shoot_sound.set_volume(0.05)
 
     def animate(self):
         self.frame_index += self.animation_speed
@@ -89,6 +91,7 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         self.shooting = True
         self.speed = 3 #slow down player when they are shooting
+        pygame.mixer.Sound.play(self.shoot_sound)
         self.projectiles.append(Projectile((self.rect.centerx, self.rect.centery),  
             get_angle(pygame.mouse.get_pos(), self.rect.center)))
 
