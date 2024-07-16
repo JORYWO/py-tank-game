@@ -15,6 +15,7 @@ class Game:
         self.main_menu = MainMenu(self)
         self.credits = CreditsMenu(self)
         self.death_screen = DeathScreen(self)
+        self.pause_menu = PauseMenu(self)
         self.curr_menu = self.main_menu
 
     def setup(self):
@@ -27,6 +28,7 @@ class Game:
             if self.BACK_KEY:
                 play_menu_select_sound()
                 self.playing, self.player_alive = False, True
+                self.curr_menu = self.pause_menu
             self.display.fill(BLACK)
             self.player_alive, self.final_score = self.level.run(int(clock.get_fps()))
             if not self.player_alive: self.curr_menu = self.death_screen # set to death screen if player is dead

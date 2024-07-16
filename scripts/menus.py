@@ -84,6 +84,70 @@ class MainMenu(Menu):
         self.run_display = False
 
 
+class PauseMenu(Menu):
+    def __init__(self, game):
+        Menu.__init__(self, game)
+
+        self.resumex, self.resumey = MID_W, MID_H
+        self.resume_rect = pygame.Rect(MID_W - 105, MID_H - 20, 210, 39)
+
+        self.back_to_menux, self.back_to_menuy = MID_W, MID_H + 40
+        self.back_to_menu_rect = pygame.Rect(MID_W - 105, MID_H + 29, 210, 69)
+
+        self.exitx, self.exity = MID_W, MID_H + 110
+        self.exit_rect = pygame.Rect(MID_W - 105, MID_H + 97, 210, 39)
+
+    def display_menu(self):
+        self.run_display = True
+        while self.run_display:
+            self.game.check_events()
+            self.check_input()
+            self.game.display.fill(BLACK)
+            self.game.draw_text('Paused', 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 250, WHITE)
+            self.game.draw_text("Resume", int(30 * self.resume_scale), self.resumex, self.resumey, WHITE)
+            self.game.draw_text("Back to", int(30 * self.back_scale), self.back_to_menux, self.back_to_menuy, WHITE)
+            self.game.draw_text("Menu", int(30 * self.back_scale), self.back_to_menux, self.back_to_menuy + 30, WHITE)
+            self.game.draw_text("Exit", int(30 * self.exit_scale), self.exitx, self.exity, WHITE)
+            self.draw_cursor()
+            self.blit_screen()
+
+    #updates the cursor with mouse position
+    def move_cursor(self):
+        if self.resume_rect.collidepoint((self.game.mx,self.game.my)):
+            self.cursor_rect.midtop = (self.resumex + self.offset, self.resumey)
+            self.resume_scale = 1.2
+            self.exit_scale = self.back_scale = 1
+        elif self.back_to_menu_rect.collidepoint((self.game.mx,self.game.my)):
+            self.cursor_rect.midtop = (self.back_to_menux + self.offset, self.back_to_menuy + 12)
+            self.back_scale = 1.2
+            self.resume_scale = self.exit_scale = 1
+        elif self.exit_rect.collidepoint((self.game.mx,self.game.my)):
+            self.cursor_rect.midtop = (self.exitx + self.offset, self.exity)
+            self.exit_scale = 1.2
+            self.resume_scale = self.back_scale = 1
+        else:
+            self.cursor_rect.midtop = (0,0)
+            self.resume_scale = self.back_scale = self.exit_scale = 1
+
+    def check_input(self):
+        self.move_cursor()
+        if self.game.click:
+            if self.resume_rect.collidepoint((self.game.mx,self.game.my)):
+                play_menu_select_sound()
+                self.game.playing = True
+            elif self.back_to_menu_rect.collidepoint((self.game.mx,self.game.my)):
+                play_menu_select_sound()
+                self.game.curr_menu = self.game.main_menu
+            elif self.exit_rect.collidepoint((self.game.mx,self.game.my)):
+                play_menu_select_sound(0.5)
+                pygame.quit()
+                sys.exit()
+        elif self.game.BACK_KEY:
+            play_menu_select_sound(0.5)
+            pygame.quit()
+            sys.exit()
+        self.run_display = False
+
 class CreditsMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game) 
