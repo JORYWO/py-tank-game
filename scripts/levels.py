@@ -136,7 +136,12 @@ class Level:
                         enemy.size -= 10
                     proj_list.pop(proj_index)
 
-            #player projectiles can shoot other player projectiles
+    #player projectiles can shoot other player projectiles
+    def player_bullet_collisions_with_itself(self):
+        proj_list = self.player.sprite.projectiles
+        new_proj_list = list(proj_list)
+        for proj_index, proj in sorted(enumerate(proj_list), reverse=True):
+            new_proj_list.pop(proj_index)
             for next_proj_index, next_proj in sorted(enumerate(new_proj_list), reverse=True):
                 if next_proj.rect.colliderect(proj.rect): 
                     for sparks in range(7):
@@ -203,6 +208,7 @@ class Level:
         self.player.update()
         self.player_collisions()
         self.wall_collisions(self.player.sprite.projectiles)
+        self.player_bullet_collisions_with_itself()
         self.player_hit_collisions()
         self.player.draw(display)
 
