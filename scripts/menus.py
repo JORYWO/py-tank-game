@@ -22,14 +22,17 @@ class MainMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
 
-        self.startx, self.starty = MID_W, MID_H + 30
-        self.start_rect = pygame.Rect(MID_W - 105, MID_H + 10, 210, 39)
+        self.bossesx, self.bossesy = MID_W, MID_H + 10
+        self.bosses_rect = pygame.Rect(MID_W - 105, MID_H - 10, 210, 39)
 
-        self.creditsx, self.creditsy = MID_W, MID_H + 70
-        self.credits_rect = pygame.Rect(MID_W - 105, MID_H + 49, 210, 39)
+        self.endlessx, self.endlessy = MID_W, MID_H + 50
+        self.endless_rect = pygame.Rect(MID_W - 105, MID_H + 30, 210, 39)
 
-        self.exitx, self.exity = MID_W, MID_H + 110
-        self.exit_rect = pygame.Rect(MID_W - 105, MID_H + 87, 210, 39)
+        self.creditsx, self.creditsy = MID_W, MID_H + 90
+        self.credits_rect = pygame.Rect(MID_W - 105, MID_H + 71, 210, 39)
+
+        self.exitx, self.exity = MID_W, MID_H + 130
+        self.exit_rect = pygame.Rect(MID_W - 105, MID_H + 110, 210, 39)
 
         
     def display_menu(self):
@@ -39,7 +42,8 @@ class MainMenu(Menu):
             self.check_input()
             self.game.display.fill(BLACK)
             self.game.draw_text('Bullet Bounce', 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 250, WHITE)
-            self.game.draw_text("Start Game", int(30 * self.start_scale), self.startx, self.starty, WHITE)
+            self.game.draw_text("Stage", int(30 * self.boss_scale), self.bossesx, self.bossesy, WHITE)
+            self.game.draw_text("Endless", int(30 * self.endless_scale), self.endlessx, self.endlessy, WHITE)
             self.game.draw_text("Credits", int(30 * self.credits_scale), self.creditsx, self.creditsy, WHITE)
             self.game.draw_text("Exit", int(30 * self.exit_scale), self.exitx, self.exity, WHITE)
             self.draw_cursor()
@@ -47,26 +51,33 @@ class MainMenu(Menu):
 
     #updates the cursor with mouse position
     def move_cursor(self):
-        if self.start_rect.collidepoint((self.game.mx,self.game.my)):
-            self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
-            self.start_scale = 1.2
-            self.exit_scale = self.credits_scale = 1
+        if self.bosses_rect.collidepoint((self.game.mx,self.game.my)):
+            self.cursor_rect.midtop = (self.bossesx + self.offset, self.bossesy)
+            self.boss_scale = 1.2
+            self.endless_scale = self.exit_scale = self.credits_scale = 1
+        elif self.endless_rect.collidepoint((self.game.mx,self.game.my)):
+            self.cursor_rect.midtop = (self.endlessx + self.offset, self.endlessy)
+            self.endless_scale = 1.2
+            self.boss_scale = self.exit_scale = self.credits_scale = 1
         elif self.credits_rect.collidepoint((self.game.mx,self.game.my)):
             self.cursor_rect.midtop = (self.creditsx + self.offset, self.creditsy)
             self.credits_scale = 1.2
-            self.start_scale = self.exit_scale = 1
+            self.boss_scale = self.endless_scale = self.exit_scale = 1
         elif self.exit_rect.collidepoint((self.game.mx,self.game.my)):
             self.cursor_rect.midtop = (self.exitx + self.offset, self.exity)
             self.exit_scale = 1.2
-            self.start_scale = self.credits_scale = 1
+            self.boss_scale = self.endless_scale = self.credits_scale = 1
         else:
             self.cursor_rect.midtop = (0,0)
-            self.start_scale = self.exit_scale = self.credits_scale = 1
+            self.boss_scale = self.endless_scale = self.exit_scale = self.credits_scale = 1
 
     def check_input(self):
         self.move_cursor()
         if self.game.click:
-            if self.start_rect.collidepoint((self.game.mx,self.game.my)):
+            if self.bosses_rect.collidepoint((self.game.mx,self.game.my)):
+                play_menu_select_sound()
+                print("run bosses stage")
+            elif self.endless_rect.collidepoint((self.game.mx,self.game.my)):
                 play_menu_select_sound()
                 self.game.playing = True
                 self.game.setup()
