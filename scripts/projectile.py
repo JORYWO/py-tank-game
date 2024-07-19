@@ -26,11 +26,14 @@ class Projectile():
 
         if not self.increment_up and self.light_effect >= 0: self.light_effect -= 0.2
         else: self.increment_up = True
+        surface = pygame.Surface((self.size, self.size))
+        self.mask = pygame.mask.from_surface(surface)
 
     def draw(self, surf):
         self.update()
         pygame.draw.ellipse(surf, PROJ_COLOUR, (self.rect.x,self.rect.y,self.size,self.size))
         shadowRadius = self.size + int(self.light_effect)
+        # surf.blit(self.mask.to_surface(), self.rect.topleft)
         surf.blit(self.circle_lighting(shadowRadius, PROJ_COLOUR),
             (int(self.rect.centerx - shadowRadius), int(self.rect.centery - shadowRadius)), special_flags=pygame.BLEND_RGBA_ADD)
 
