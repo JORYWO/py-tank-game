@@ -1,5 +1,5 @@
 import pygame, sys, webbrowser
-from scripts.settings import MID_W, WINDOW_SIZE, WHITE, BLACK, DEATH_TEXT_COLOUR, MID_W, MID_H, play_menu_select_sound
+from scripts.settings import MID_W, WINDOW_SIZE, WHITE, BLACK, DEATH_TEXT_COLOUR, MID_W, MID_H, play_menu_select_sound, draw_text
 
 
 class Menu():
@@ -10,7 +10,7 @@ class Menu():
         self.offset = - 120
 
     def draw_cursor(self):
-        self.game.draw_text(">>", 20, self.cursor_rect.x, self.cursor_rect.y, WHITE)
+        draw_text(self.game.display, ">>", 20, self.cursor_rect.x, self.cursor_rect.y, WHITE)
 
     def blit_screen(self):
         self.game.display.blit(self.game.display, (0, 0))
@@ -41,11 +41,11 @@ class MainMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(BLACK)
-            self.game.draw_text('Bullet Bounce', 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 250, WHITE)
-            self.game.draw_text("Stage", int(30 * self.boss_scale), self.bossesx, self.bossesy, WHITE)
-            self.game.draw_text("Endless", int(30 * self.endless_scale), self.endlessx, self.endlessy, WHITE)
-            self.game.draw_text("Credits", int(30 * self.credits_scale), self.creditsx, self.creditsy, WHITE)
-            self.game.draw_text("Exit", int(30 * self.exit_scale), self.exitx, self.exity, WHITE)
+            draw_text(self.game.display, 'Bullet Bounce', 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 250, WHITE)
+            draw_text(self.game.display, "Stage", int(30 * self.boss_scale), self.bossesx, self.bossesy, WHITE)
+            draw_text(self.game.display, "Endless", int(30 * self.endless_scale), self.endlessx, self.endlessy, WHITE)
+            draw_text(self.game.display, "Credits", int(30 * self.credits_scale), self.creditsx, self.creditsy, WHITE)
+            draw_text(self.game.display, "Exit", int(30 * self.exit_scale), self.exitx, self.exity, WHITE)
             self.draw_cursor()
             self.blit_screen()
 
@@ -77,6 +77,8 @@ class MainMenu(Menu):
             if self.bosses_rect.collidepoint((self.game.mx,self.game.my)):
                 play_menu_select_sound()
                 print("run bosses stage")
+                self.game.playing = True
+                self.game.setup("boss1")
             elif self.endless_rect.collidepoint((self.game.mx,self.game.my)):
                 play_menu_select_sound()
                 self.game.playing = True
@@ -114,11 +116,11 @@ class PauseMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(BLACK)
-            self.game.draw_text('Paused', 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 250, WHITE)
-            self.game.draw_text("Resume", int(30 * self.resume_scale), self.resumex, self.resumey, WHITE)
-            self.game.draw_text("Back to", int(30 * self.back_scale), self.back_to_menux, self.back_to_menuy, WHITE)
-            self.game.draw_text("Menu", int(30 * self.back_scale), self.back_to_menux, self.back_to_menuy + 30, WHITE)
-            self.game.draw_text("Exit", int(30 * self.exit_scale), self.exitx, self.exity, WHITE)
+            draw_text(self.game.display, 'Paused', 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 250, WHITE)
+            draw_text(self.game.display, "Resume", int(30 * self.resume_scale), self.resumex, self.resumey, WHITE)
+            draw_text(self.game.display, "Back to", int(30 * self.back_scale), self.back_to_menux, self.back_to_menuy, WHITE)
+            draw_text(self.game.display, "Menu", int(30 * self.back_scale), self.back_to_menux, self.back_to_menuy + 30, WHITE)
+            draw_text(self.game.display, "Exit", int(30 * self.exit_scale), self.exitx, self.exity, WHITE)
             self.draw_cursor()
             self.blit_screen()
 
@@ -179,10 +181,10 @@ class CreditsMenu(Menu):
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
             self.game.display.fill(BLACK)
-            self.game.draw_text('Credits', 50, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 175, WHITE)
-            self.game.draw_text('Font', int(30 * self.font_scale), self.fontx, self.fonty, WHITE)
-            self.game.draw_text('Code', int(30 * self.sound_scale), self.codex, self.codey, WHITE)
-            self.game.draw_text('Tutorials', int(30 * self.sound_scale), self.codex, self.codey + 30, WHITE)
+            draw_text(self.game.display, 'Credits', 50, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 175, WHITE)
+            draw_text(self.game.display, 'Font', int(30 * self.font_scale), self.fontx, self.fonty, WHITE)
+            draw_text(self.game.display, 'Code', int(30 * self.sound_scale), self.codex, self.codey, WHITE)
+            draw_text(self.game.display, 'Tutorials', int(30 * self.sound_scale), self.codex, self.codey + 30, WHITE)
             self.draw_cursor()
             self.blit_screen()
 
@@ -226,10 +228,10 @@ class DeathScreen(Menu):
             else: self.ellipses_num = 0
 
             self.game.display.fill(BLACK)
-            self.game.draw_text("YOU DIED", 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 225, DEATH_TEXT_COLOUR)
-            self.game.draw_text(f"Score:  {str(final_score)}", 40, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 100, WHITE)
-            self.game.draw_text("Click again to play again or press Escape to quit", 20, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 + 230, WHITE)
-            self.game.draw_text(int(self.ellipses_num) * '. ', 20, WINDOW_SIZE[0] / 2 + 255, WINDOW_SIZE[1] / 2 + 230, WHITE)
+            draw_text(self.game.display, "YOU DIED", 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 225, DEATH_TEXT_COLOUR)
+            draw_text(self.game.display, f"Score:  {str(final_score)}", 40, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 100, WHITE)
+            draw_text(self.game.display, "Click again to play again or press Escape to quit", 20, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 + 230, WHITE)
+            draw_text(self.game.display, int(self.ellipses_num) * '. ', 20, WINDOW_SIZE[0] / 2 + 255, WINDOW_SIZE[1] / 2 + 230, WHITE)
             self.blit_screen()
 
     def check_input(self):

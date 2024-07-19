@@ -34,3 +34,11 @@ def get_angle(coord1, coord2):
 def play_menu_select_sound(delay=0):
     pygame.mixer.Sound.play(menu_select_sound)
     pygame.time.delay(int(delay * 1000))
+
+#draw text onto the selected surfact
+def draw_text(surface, text, size, x, y, colour):
+    font = pygame.font.Font(FONT, size)
+    text_surface = font.render(text, True, colour)
+    text_rect = text_surface.get_rect()
+    text_rect.center = (x,y)
+    surface.blit(text_surface,text_rect)
