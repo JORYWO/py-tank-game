@@ -2,8 +2,8 @@ import pygame, math
 from scripts.settings import BLACK
 
 class Projectile():
-    def __init__(self, pos, angle, colour, collision_num=1):
-        self.size = 10
+    def __init__(self, pos, angle, colour, size = 10, collision_num=1):
+        self.size = size
         self.rect = pygame.Rect(pos[0], pos[1], self.size, self.size)
         self.x , self.y = pos
         self.colour = colour

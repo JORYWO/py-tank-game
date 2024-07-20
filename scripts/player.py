@@ -93,7 +93,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = 3 #slow down player when they are shooting
         pygame.mixer.Sound.play(self.shoot_sound)
         self.projectiles.append(Projectile((self.rect.centerx, self.rect.centery),  
-            get_angle(pygame.mouse.get_pos(), self.rect.center), PROJ_COLOUR, 0))
+            get_angle(pygame.mouse.get_pos(), self.rect.center), PROJ_COLOUR, collision_num=0))
 
     def get_state(self):
         if abs(self.acc.x) > 0 or abs(self.acc.y) > 0: self.max_frames = 6
