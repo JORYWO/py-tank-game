@@ -1,3 +1,4 @@
+from os import remove
 import pygame, math
 from random import randint 
 from csv import reader
@@ -5,6 +6,7 @@ from scripts.projectile import Projectile
 from scripts.tiles import StaticTile, AnimatedTile
 from scripts.player import Player
 from scripts.enemy import NormalEnemy, TrackerEnemy
+from scripts.bosses import Boss1
 from scripts.ui import Ui
 from scripts.sparks import Spark
 from scripts.settings import WINDOW_SIZE, FPS, TILE_SIZE, PROJ_COLOUR, SPARK_COLOUR
@@ -12,8 +14,9 @@ from scripts.settings import WINDOW_SIZE, FPS, TILE_SIZE, PROJ_COLOUR, SPARK_COL
 display = pygame.Surface(WINDOW_SIZE) #surface for rendering onto and used for screen shake
 
 class Level:
-    def __init__(self, level_data, surface):
+    def __init__(self, level_data, surface, mode):
         self.display_surface = surface
+        self.mode = mode
         self.screen_shake_timer = 0
         self.ui = Ui(self.display_surface)
         self.collision_sound = pygame.mixer.Sound("data/sounds/playerCollision.wav")
@@ -23,6 +26,12 @@ class Level:
         player_layout = import_csv_layout(level_data["player"])
         self.player = pygame.sprite.GroupSingle()
         self.player_setup(player_layout)
+
+        #boss
+        if self.mode != "endless":
+            boss1 = Boss1()
+            self.boss1 = pygame.sprite.GroupSingle()
+            self.boss1.add(boss1)
 
         #background
         background_layout = import_csv_layout(level_data["background"])
@@ -92,12 +101,14 @@ class Level:
                 elif player.acc.y > 0: player.rect.bottom = sprite.rect.top
 
     #enemy and projectile collision with the wall
-    def wall_collisions(self, elemList):
-        for element in elemList:
+    def wall_collisions(self, elemList, remove_on_wall_collision=False):
+        for i, element in sorted(enumerate(elemList), reverse=True):
             if element.rect.left <= TILE_SIZE or element.rect.right >= WINDOW_SIZE[0] - TILE_SIZE: 
+                if remove_on_wall_collision: elemList.pop(i)
                 element.vel_x *= -1 
                 if type(element) is Projectile: element.collision_num += 1
             elif element.rect.top <= TILE_SIZE * 2 or element.rect.bottom >= WINDOW_SIZE[1] - TILE_SIZE / 2: 
+                if remove_on_wall_collision: elemList.pop(i)
                 element.vel_y *= -1
                 if type(element) is Projectile: element.collision_num += 1
             if type(element) is TrackerEnemy: element.draw(self.display_surface, self.player.sprite.rect.center)
@@ -149,6 +160,16 @@ class Level:
                     proj_list.pop(proj_index)
                     proj_list.pop(next_proj_index)
 
+    # player collision with any type of bullet
+    def player_bullet_collisions(self, bullet_list):
+        player = self.player.sprite
+        for j, proj in sorted(enumerate(bullet_list), reverse=True):
+            if proj.rect.colliderect(player.rect) and proj.collision_num:
+                player.health -= proj.damage
+                bullet_list.pop(j)
+                self.screen_shake_timer = 12
+                pygame.mixer.Sound.play(self.collision_sound)
+
     #collision with enemy and projectiles
     def player_hit_collisions(self):
         player = self.player.sprite
@@ -159,12 +180,26 @@ class Level:
                 self.enemy_list.pop(i)
                 pygame.mixer.Sound.play(self.collision_sound)
 
-        for j, proj in sorted(enumerate(player.projectiles), reverse=True):
-            if proj.rect.colliderect(player.rect) and proj.collision_num:
-                player.health -= proj.damage
-                player.projectiles.pop(j)
-                self.screen_shake_timer = 12
-                pygame.mixer.Sound.play(self.collision_sound)
+        # for j, proj in sorted(enumerate(player.projectiles), reverse=True):
+        #     if proj.rect.colliderect(player.rect) and proj.collision_num:
+        #         player.health -= proj.damage
+        #         player.projectiles.pop(j)
+        #         self.screen_shake_timer = 12
+        #         pygame.mixer.Sound.play(self.collision_sound)
+
+    def boss_bullet_collision(self):
+        proj_list = self.player.sprite.projectiles
+        boss = self.boss1.sprite
+        for proj_index, proj in sorted(enumerate(proj_list), reverse=True):
+            if boss.image_mask.overlap(proj.mask, (proj.x - boss.rect.x, proj.y - boss.rect.y)) and not boss.invulnerable:
+                boss.health -= 1
+                proj_list.pop(proj_index)
+
+    # def boss_player_bullet_collision(self):
+    #     boss_proj_list = self.boss1.sprite.projectiles
+    #     new_proj_list = list(boss_proj_list )
+    #     for proj_index, proj in sorted(enumerate(new_proj_list), reverse=True):
+    #         if proj.rect.collide
 
     #draw and update sparks
     def update_sparks(self):
@@ -200,9 +235,16 @@ class Level:
         self.update_sparks()
 
         #enemies
-        self.spawn_enemies()
-        self.wall_collisions(self.enemy_list)
-        self.proj_enemy_collisions()
+        if self.mode == "endless":
+            self.spawn_enemies()
+            self.wall_collisions(self.enemy_list)
+            self.proj_enemy_collisions()
+        #boss
+        else:
+            self.boss1.update()
+            self.boss1.sprite.draw(display)
+            self.wall_collisions(self.boss1.sprite.projectiles, True)
+            self.boss_bullet_collision()
 
         #player 
         self.player.update()
@@ -210,6 +252,8 @@ class Level:
         self.wall_collisions(self.player.sprite.projectiles)
         self.player_bullet_collisions_with_itself()
         self.player_hit_collisions()
+        self.player_bullet_collisions(self.player.sprite.projectiles)
+        if self.mode != "endless": self.player_bullet_collisions(self.boss1.sprite.projectiles)
         self.player.draw(display)
 
         #ui 

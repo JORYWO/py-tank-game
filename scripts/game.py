@@ -18,9 +18,9 @@ class Game:
         self.pause_menu = PauseMenu(self)
         self.curr_menu = self.main_menu
 
-    def setup(self):
+    def setup(self, mode="endless"):
         self.level_name = endless
-        self.level = Level(self.level_name, self.display)
+        self.level = Level(self.level_name, self.display, mode)
 
     def game_loop(self):
         while self.playing and self.player_alive:
