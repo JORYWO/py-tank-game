@@ -76,7 +76,6 @@ class MainMenu(Menu):
         if self.game.click:
             if self.bosses_rect.collidepoint((self.game.mx,self.game.my)):
                 play_menu_select_sound()
-                print("run bosses stage")
                 self.game.playing = True
                 self.game.setup("boss1")
             elif self.endless_rect.collidepoint((self.game.mx,self.game.my)):
@@ -230,16 +229,15 @@ class DeathScreen(Menu):
             self.game.display.fill(BLACK)
             draw_text(self.game.display, "YOU DIED", 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 225, DEATH_TEXT_COLOUR)
             draw_text(self.game.display, f"Score:  {str(final_score)}", 40, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 100, WHITE)
-            draw_text(self.game.display, "Click again to play again or press Escape to quit", 20, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 + 230, WHITE)
-            draw_text(self.game.display, int(self.ellipses_num) * '. ', 20, WINDOW_SIZE[0] / 2 + 255, WINDOW_SIZE[1] / 2 + 230, WHITE)
+            draw_text(self.game.display, "Click again to go to the main menu or press Escape to quit", 20, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 + 230, WHITE)
+            draw_text(self.game.display, int(self.ellipses_num) * '. ', 20, WINDOW_SIZE[0] / 2 + 305, WINDOW_SIZE[1] / 2 + 230, WHITE)
             self.blit_screen()
 
     def check_input(self):
         if self.game.click:
             play_menu_select_sound()
             self.game.curr_menu = self.game.main_menu #set the last screen to main menu so when user presses esc they return to main menu
-            self.game.playing = True
-            self.game.setup()
+            self.game.playing = False
             self.run_display = False
         if self.game.BACK_KEY:
             play_menu_select_sound(0.5)
