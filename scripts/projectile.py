@@ -1,11 +1,12 @@
 import pygame, math
-from scripts.settings import PROJ_COLOUR, BLACK
+from scripts.settings import BLACK
 
 class Projectile():
-    def __init__(self, pos, angle):
+    def __init__(self, pos, angle, colour, collision_num=1):
         self.size = 10
         self.rect = pygame.Rect(pos[0], pos[1], self.size, self.size)
         self.x , self.y = pos
+        self.colour = colour
 
         self.dx = math.cos(angle)
         self.dy = math.sin(angle)
@@ -13,7 +14,7 @@ class Projectile():
         self.light_effect = 8
         self.increment_up = True
 
-        self.collision_num = 0
+        self.collision_num = collision_num
         self.damage = 5 
 
     def update(self):
@@ -31,10 +32,10 @@ class Projectile():
 
     def draw(self, surf):
         self.update()
-        pygame.draw.ellipse(surf, PROJ_COLOUR, (self.rect.x,self.rect.y,self.size,self.size))
+        pygame.draw.ellipse(surf, self.colour, (self.rect.x,self.rect.y,self.size,self.size))
         shadowRadius = self.size + int(self.light_effect)
         # surf.blit(self.mask.to_surface(), self.rect.topleft)
-        surf.blit(self.circle_lighting(shadowRadius, PROJ_COLOUR),
+        surf.blit(self.circle_lighting(shadowRadius, self.colour),
             (int(self.rect.centerx - shadowRadius), int(self.rect.centery - shadowRadius)), special_flags=pygame.BLEND_RGBA_ADD)
 
     # provides lighting for the projectile

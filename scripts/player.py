@@ -1,7 +1,7 @@
 import pygame, math
 from pygame.locals import *
 from scripts.projectile import Projectile
-from scripts.settings import VEC, PLAYER_SIZE, get_angle
+from scripts.settings import VEC, PLAYER_SIZE, PROJ_COLOUR, get_angle
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -93,7 +93,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = 3 #slow down player when they are shooting
         pygame.mixer.Sound.play(self.shoot_sound)
         self.projectiles.append(Projectile((self.rect.centerx, self.rect.centery),  
-            get_angle(pygame.mouse.get_pos(), self.rect.center)))
+            get_angle(pygame.mouse.get_pos(), self.rect.center), PROJ_COLOUR, 0))
 
     def get_state(self):
         if abs(self.acc.x) > 0 or abs(self.acc.y) > 0: self.max_frames = 6

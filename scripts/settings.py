@@ -15,7 +15,8 @@ GREEN = (0, 128, 0)
 FONT = "data/fonts/Minecraft_font.ttf"
 VEC = pygame.math.Vector2
 
-PROJ_COLOUR = (20,20,60)
+PROJ_COLOUR = (20, 20, 60)
+BOSS_PROJ_COLOUR = (127, 14, 14)
 SPARK_COLOUR = (61, 22, 29)
 DEATH_TEXT_COLOUR = (89, 9, 23)
 
