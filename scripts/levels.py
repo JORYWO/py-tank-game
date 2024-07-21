@@ -241,7 +241,7 @@ class Level:
             self.proj_enemy_collisions()
         #boss
         else:
-            self.boss1.update()
+            self.boss1.update(self.player.sprite.rect.center)
             self.boss1.sprite.draw(display)
             self.wall_collisions(self.boss1.sprite.projectiles, True)
             self.boss_bullet_collision()
