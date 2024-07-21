@@ -11,5 +11,6 @@ if __name__ == "__main__":
     #main game loop
     while game.running:
         if game.curr_menu == game.death_screen: game.curr_menu.display_menu(game.final_score)
+        elif game.curr_menu == game.victory_screen: game.curr_menu.display_menu()
         else: game.curr_menu.display_menu()
         game.game_loop()

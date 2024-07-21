@@ -248,7 +248,7 @@ class Level:
         self.ui.show_score(self.player.sprite.score)
         self.ui.draw_healthbar((self.player.sprite.rect.centerx - 25, self.player.sprite.rect.bottom - 5), 100, self.player.sprite.health)
 
-        return self.player.sprite.alive, self.player.sprite.score
+        return self.player.sprite.alive, self.player.sprite.score, (self.boss1.sprite.is_alive() if self.mode != "endless" else None)
 
 
 '''HELPER FUNCTIONS'''

@@ -213,11 +213,11 @@ class CreditsMenu(Menu):
                 webbrowser.open("https://www.youtube.com/watch?v=a5JWrd7Y_14", new = 2)
 
 
-class DeathScreen(Menu):
+class EndScreen(Menu):
     def __init__(self, game):
         Menu.__init__(self, game) 
 
-    def display_menu(self, final_score):
+    def display_menu(self, header, stats, command):
         self.run_display = True
         self.ellipses_num = 0
         while self.run_display:
@@ -227,9 +227,9 @@ class DeathScreen(Menu):
             else: self.ellipses_num = 0
 
             self.game.display.fill(BLACK)
-            draw_text(self.game.display, "YOU DIED", 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 225, DEATH_TEXT_COLOUR)
-            draw_text(self.game.display, f"Score:  {str(final_score)}", 40, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 100, WHITE)
-            draw_text(self.game.display, "Click again to go to the main menu or press Escape to quit", 20, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 + 230, WHITE)
+            draw_text(self.game.display, header, 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 225, DEATH_TEXT_COLOUR)
+            draw_text(self.game.display, stats, 40, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 100, WHITE)
+            draw_text(self.game.display, f"Click again to go to the {command} or press Escape to quit", 20, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 + 230, WHITE)
             draw_text(self.game.display, int(self.ellipses_num) * '. ', 20, WINDOW_SIZE[0] / 2 + 305, WINDOW_SIZE[1] / 2 + 230, WHITE)
             self.blit_screen()
 
@@ -243,3 +243,20 @@ class DeathScreen(Menu):
             play_menu_select_sound(0.5)
             pygame.quit()
             sys.exit()
+
+
+class DeathScreen(EndScreen):
+    def __init__(self, game):
+        EndScreen.__init__(self, game)
+
+    def display_menu(self, final_score):
+        return super().display_menu("YOU DIED", f"Score: {str(final_score)}", "main menu")
+
+class VictoryScreen(EndScreen):
+    def __init__(self, game):
+        EndScreen.__init__(self, game)
+
+    def display_menu(self, completed_time=0):
+        return super().display_menu("VICTORY", f"Time: {str(completed_time)}s", "next boss")
+
+    
