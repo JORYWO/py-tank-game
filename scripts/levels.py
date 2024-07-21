@@ -180,13 +180,6 @@ class Level:
                 self.enemy_list.pop(i)
                 pygame.mixer.Sound.play(self.collision_sound)
 
-        # for j, proj in sorted(enumerate(player.projectiles), reverse=True):
-        #     if proj.rect.colliderect(player.rect) and proj.collision_num:
-        #         player.health -= proj.damage
-        #         player.projectiles.pop(j)
-        #         self.screen_shake_timer = 12
-        #         pygame.mixer.Sound.play(self.collision_sound)
-
     def boss_bullet_collision(self):
         proj_list = self.player.sprite.projectiles
         boss = self.boss1.sprite
@@ -194,12 +187,6 @@ class Level:
             if boss.image_mask.overlap(proj.mask, (proj.x - boss.rect.x, proj.y - boss.rect.y)) and not boss.invulnerable:
                 boss.health -= 1
                 proj_list.pop(proj_index)
-
-    # def boss_player_bullet_collision(self):
-    #     boss_proj_list = self.boss1.sprite.projectiles
-    #     new_proj_list = list(boss_proj_list )
-    #     for proj_index, proj in sorted(enumerate(new_proj_list), reverse=True):
-    #         if proj.rect.collide
 
     #draw and update sparks
     def update_sparks(self):

@@ -56,18 +56,15 @@ class Boss1(Boss):
 
   def handle_state_transition(self):
     if self.curr_state == "idle":
-      print("idle")
       if self.time_in_state >= 2 * 60:
         self.invulnerable = False
         self.curr_state = "attack"
         self.time_in_state = 0
     elif self.curr_state == "attack":
-      print("attack")
       if self.time_in_state >= 2 * 11:  # Attack animation runs twice
           self.curr_state = random.choices(["skill", "summon"], [0.5, 0.5])[0]
           self.time_in_state = 0
     elif self.curr_state in ["skill", "summon"]:
-      print(self.curr_state)
       self.curr_state = random.choices(["attack", "skill", "summon"], [0.4, 0.3, 0.3])[0]
       self.time_in_state = 0
 
