@@ -71,17 +71,23 @@ class Boss1(Boss):
   def handle_shoot(self, player_pos):
     if self.curr_state == "attack":
       if self.time_in_state >= 3 and self.time_in_state <= 45 and self.cooldown > 5:
-        offsets, angles = [-75, 0, 75], [0, -3.14]
+        offsets, angles, angles2 = [-75, 0, 75], [0, -3.14], [-1.57, 1.57]
         for offset in offsets:
             for angle in angles:
                 self.projectiles.append(Projectile((self.rect.centerx, self.rect.centery + offset), angle, BOSS_PROJ_COLOUR))
+            for angle in angles2:
+                self.projectiles.append(Projectile((self.rect.centerx + offset, self.rect.centery), angle, BOSS_PROJ_COLOUR))
         self.cooldown = 0
       elif self.time_in_state > 60 and self.time_in_state <= 110 and self.cooldown > 5:
-        offsets, angles_set_1, angles_set_2 = [-40, 0, 40], [-0.4, 0, 0.4], [-2.74, -3.14, 2.74]
+        offsets, angles_set_1, angles_set_2, angles_set_3, angles_set_4 = [-40, 0, 40], [-0.4, 0, 0.4], [-2.74, -3.14, 2.74], [-1.97, -1.57, -1.17], [1.97, 1.57, 1.17]
         for offset, angle in zip(offsets, angles_set_1):
           self.projectiles.append(Projectile((self.rect.centerx, self.rect.centery + offset), angle, BOSS_PROJ_COLOUR))
         for offset, angle in zip(offsets, angles_set_2):
           self.projectiles.append(Projectile((self.rect.centerx + 12, self.rect.centery + offset), angle, BOSS_PROJ_COLOUR))
+        for offset, angle in zip(offsets, angles_set_3):
+          self.projectiles.append(Projectile((self.rect.centerx, self.rect.centery), angle, BOSS_PROJ_COLOUR))
+        for offset, angle in zip(offsets, angles_set_4):
+          self.projectiles.append(Projectile((self.rect.centerx, self.rect.centery), angle, BOSS_PROJ_COLOUR))
         self.cooldown = 0
     elif self.curr_state == "skill":
       if self.cooldown > 1:
