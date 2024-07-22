@@ -36,7 +36,7 @@ class Ui:
         
     #displays either player score or time elapsed
     def show_stat(self, stat):
-        text = format_time(datetime.now() - stat) if not self.is_endless else stat
+        text = format_time(stat) if not self.is_endless else stat
         self.display_surf.blit(self.stat_text, self.stat_rect)
         current_stat = self.font.render(str(text), False, WHITE)
         current_stat_rect = current_stat.get_rect(midleft = (self.stat_rect.right + 12, self.stat_rect.centery))

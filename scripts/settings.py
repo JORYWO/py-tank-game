@@ -1,4 +1,5 @@
 import pygame, math
+from datetime import datetime
 
 pygame.mixer.init()
 
@@ -45,6 +46,6 @@ def draw_text(surface, text, size, x, y, colour):
     text_rect.center = (x,y)
     surface.blit(text_surface,text_rect)
 
-#format time to seconds with 2dp
+#returns time in seconds from a start time
 def format_time(time):
-    return f"{str(round((time).total_seconds(), 2))}s"
+    return f"{str(round((datetime.now() - time).total_seconds(), 2))}s"

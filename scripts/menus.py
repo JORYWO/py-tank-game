@@ -257,7 +257,7 @@ class VictoryScreen(EndScreen):
     def __init__(self, game):
         EndScreen.__init__(self, game)
 
-    def display_menu(self, completed_time):
-        return super().display_menu("VICTORY", f"Time: {format_time(completed_time)}", "next boss", VICTORY_TEXT_COLOUR)
+    def display_menu(self, start_time):
+        return super().display_menu("VICTORY", f"Time: {format_time(start_time)}", "next boss", VICTORY_TEXT_COLOUR)
 
     

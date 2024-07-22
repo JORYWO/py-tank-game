@@ -31,7 +31,7 @@ class Game:
                 self.playing, self.player_alive = False, True
                 self.curr_menu = self.pause_menu
             self.display.fill(BLACK)
-            self.player_alive, self.final_score, self.boss_alive, self.boss_duration, self.is_endless = self.level.run(int(clock.get_fps()))
+            self.player_alive, self.final_score, self.boss_alive, self.start_time, self.is_endless = self.level.run(int(clock.get_fps()))
             if not self.player_alive: self.curr_menu = self.death_screen # set to death screen if player is dead
             elif self.boss_alive is False: self.curr_menu = self.victory_screen
             pygame.display.update()
