@@ -1,9 +1,11 @@
 import pygame
-from scripts.settings import FONT, WHITE, BLACK, RED, GREEN
+from datetime import datetime
+from scripts.settings import FONT, WHITE, BLACK, RED, GREEN, format_time
 
 class Ui:
-    def __init__(self, surf):
+    def __init__(self, surf, mode):
         self.display_surf = surf
+        self.is_endless = mode
         self.font = pygame.font.Font(FONT, 28)
         self.small_font = pygame.font.Font(FONT, 11)
 
@@ -12,8 +14,9 @@ class Ui:
         self.fps_rect = self.fps_text.get_rect(topleft = (40, 12))       
 
         #Score
-        self.score_text = self.font.render("Score:", False, WHITE)
-        self.score_rect = self.score_text.get_rect(topleft = (40, 37))
+        text = "Score" if self.is_endless else "Time"
+        self.stat_text = self.font.render(f"{text}:", False, WHITE)
+        self.stat_rect = self.stat_text.get_rect(topleft = (40, 37))
 
     def draw_healthbar(self, pos, full_health, current_health):
         ratio = (full_health - current_health) / full_health
@@ -31,8 +34,10 @@ class Ui:
         current_fps_rect = current_fps.get_rect(midleft = (self.fps_rect.right + 35, self.fps_rect.centery))
         self.display_surf.blit(current_fps, current_fps_rect)
         
-    def show_score(self, score):
-        self.display_surf.blit(self.score_text, self.score_rect)
-        current_score = self.font.render(str(score), False, WHITE)
-        current_store_rect = current_score.get_rect(midleft = (self.score_rect.right + 12, self.score_rect.centery))
-        self.display_surf.blit(current_score, current_store_rect)
+    #displays either player score or time elapsed
+    def show_stat(self, stat):
+        text = format_time(datetime.now() - stat) if not self.is_endless else stat
+        self.display_surf.blit(self.stat_text, self.stat_rect)
+        current_stat = self.font.render(str(text), False, WHITE)
+        current_stat_rect = current_stat.get_rect(midleft = (self.stat_rect.right + 12, self.stat_rect.centery))
+        self.display_surf.blit(current_stat, current_stat_rect  )

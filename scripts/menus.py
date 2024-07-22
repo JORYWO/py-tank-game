@@ -1,5 +1,5 @@
 import pygame, sys, webbrowser
-from scripts.settings import MID_W, WINDOW_SIZE, WHITE, BLACK, DEATH_TEXT_COLOUR, VICTORY_TEXT_COLOUR, MID_W, MID_H, play_menu_select_sound, draw_text
+from scripts.settings import MID_W, WINDOW_SIZE, WHITE, BLACK, DEATH_TEXT_COLOUR, VICTORY_TEXT_COLOUR, MID_W, MID_H, play_menu_select_sound, draw_text, format_time
 
 
 class Menu():
@@ -217,9 +217,6 @@ class EndScreen(Menu):
     def __init__(self, game):
         Menu.__init__(self, game) 
 
-    def format_time(self, time):
-        return f"{str(round((time).total_seconds(), 2))}s"
-
     def display_menu(self, header, stats, command, header_colour):
         self.run_display = True
         self.ellipses_num = 0
@@ -253,7 +250,7 @@ class DeathScreen(EndScreen):
         EndScreen.__init__(self, game)
 
     def display_menu(self, stats, is_endless):
-        text = f"Score: {str(stats)}" if is_endless else f"Time: {self.format_time(stats)}"
+        text = f"Score: {str(stats)}" if is_endless else f"Time: {format_time(stats)}"
         return super().display_menu("YOU DIED", text, "main menu", DEATH_TEXT_COLOUR)
 
 class VictoryScreen(EndScreen):
@@ -261,6 +258,6 @@ class VictoryScreen(EndScreen):
         EndScreen.__init__(self, game)
 
     def display_menu(self, completed_time):
-        return super().display_menu("VICTORY", f"Time: {self.format_time(completed_time)}", "next boss", VICTORY_TEXT_COLOUR)
+        return super().display_menu("VICTORY", f"Time: {format_time(completed_time)}", "next boss", VICTORY_TEXT_COLOUR)
 
     

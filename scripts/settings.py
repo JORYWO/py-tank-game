@@ -44,3 +44,7 @@ def draw_text(surface, text, size, x, y, colour):
     text_rect = text_surface.get_rect()
     text_rect.center = (x,y)
     surface.blit(text_surface,text_rect)
+
+#format time to seconds with 2dp
+def format_time(time):
+    return f"{str(round((time).total_seconds(), 2))}s"

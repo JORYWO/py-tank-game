@@ -20,7 +20,7 @@ class Level:
         self.mode = mode
         self.screen_shake_timer = 0
         self.time_elapsed = datetime.now()
-        self.ui = Ui(self.display_surface)
+        self.ui = Ui(self.display_surface, self.mode == "endless")
         self.collision_sound = pygame.mixer.Sound("data/sounds/playerCollision.wav")
         self.collision_sound.set_volume(0.5) 
 
@@ -247,7 +247,8 @@ class Level:
 
         #ui 
         self.ui.show_fps(frames)
-        self.ui.show_score(self.player.sprite.score)
+        if self.mode == "endless": self.ui.show_stat(self.player.sprite.score)
+        else: self.ui.show_stat(self.time_elapsed)
         self.ui.draw_healthbar((self.player.sprite.rect.centerx - 25, self.player.sprite.rect.bottom - 5), 100, self.player.sprite.health)
 
         if self.mode != "endless":
