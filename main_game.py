@@ -10,7 +10,9 @@ if __name__ == "__main__":
     
     #main game loop
     while game.running:
-        if game.curr_menu == game.death_screen: game.curr_menu.display_menu(game.final_score)
-        elif game.curr_menu == game.victory_screen: game.curr_menu.display_menu()
+        if game.curr_menu == game.death_screen: 
+            stats = game.final_score if game.is_endless else game.boss_duration
+            game.curr_menu.display_menu(stats, game.is_endless)
+        elif game.curr_menu == game.victory_screen: game.curr_menu.display_menu(game.boss_duration)
         else: game.curr_menu.display_menu()
         game.game_loop()

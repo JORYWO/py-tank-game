@@ -1,5 +1,6 @@
 from os import remove
 import pygame, math
+from datetime import datetime
 from random import randint 
 from csv import reader
 from scripts.projectile import Projectile
@@ -18,6 +19,7 @@ class Level:
         self.display_surface = surface
         self.mode = mode
         self.screen_shake_timer = 0
+        self.time_elapsed = datetime.now()
         self.ui = Ui(self.display_surface)
         self.collision_sound = pygame.mixer.Sound("data/sounds/playerCollision.wav")
         self.collision_sound.set_volume(0.5) 
@@ -248,7 +250,13 @@ class Level:
         self.ui.show_score(self.player.sprite.score)
         self.ui.draw_healthbar((self.player.sprite.rect.centerx - 25, self.player.sprite.rect.bottom - 5), 100, self.player.sprite.health)
 
-        return self.player.sprite.alive, self.player.sprite.score, (self.boss1.sprite.is_alive() if self.mode != "endless" else None)
+        if self.mode != "endless":
+            boss_alive = self.boss1.sprite.is_alive()
+            time_elapsed = datetime.now() - self.time_elapsed
+            is_endless = False
+        else: boss_alive, time_elapsed, is_endless = None, None, True
+
+        return self.player.sprite.alive, self.player.sprite.score, boss_alive, time_elapsed, is_endless
 
 
 '''HELPER FUNCTIONS'''

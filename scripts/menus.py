@@ -1,5 +1,5 @@
 import pygame, sys, webbrowser
-from scripts.settings import MID_W, WINDOW_SIZE, WHITE, BLACK, DEATH_TEXT_COLOUR, MID_W, MID_H, play_menu_select_sound, draw_text
+from scripts.settings import MID_W, WINDOW_SIZE, WHITE, BLACK, DEATH_TEXT_COLOUR, VICTORY_TEXT_COLOUR, MID_W, MID_H, play_menu_select_sound, draw_text
 
 
 class Menu():
@@ -217,7 +217,10 @@ class EndScreen(Menu):
     def __init__(self, game):
         Menu.__init__(self, game) 
 
-    def display_menu(self, header, stats, command):
+    def format_time(self, time):
+        return f"{str(round((time).total_seconds(), 2))}s"
+
+    def display_menu(self, header, stats, command, header_colour):
         self.run_display = True
         self.ellipses_num = 0
         while self.run_display:
@@ -227,7 +230,7 @@ class EndScreen(Menu):
             else: self.ellipses_num = 0
 
             self.game.display.fill(BLACK)
-            draw_text(self.game.display, header, 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 225, DEATH_TEXT_COLOUR)
+            draw_text(self.game.display, header, 70, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 225, header_colour)
             draw_text(self.game.display, stats, 40, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 - 100, WHITE)
             draw_text(self.game.display, f"Click again to go to the {command} or press Escape to quit", 20, WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2 + 230, WHITE)
             draw_text(self.game.display, int(self.ellipses_num) * '. ', 20, WINDOW_SIZE[0] / 2 + 305, WINDOW_SIZE[1] / 2 + 230, WHITE)
@@ -249,14 +252,15 @@ class DeathScreen(EndScreen):
     def __init__(self, game):
         EndScreen.__init__(self, game)
 
-    def display_menu(self, final_score):
-        return super().display_menu("YOU DIED", f"Score: {str(final_score)}", "main menu")
+    def display_menu(self, stats, is_endless):
+        text = f"Score: {str(stats)}" if is_endless else f"Time: {self.format_time(stats)}"
+        return super().display_menu("YOU DIED", text, "main menu", DEATH_TEXT_COLOUR)
 
 class VictoryScreen(EndScreen):
     def __init__(self, game):
         EndScreen.__init__(self, game)
 
-    def display_menu(self, completed_time=0):
-        return super().display_menu("VICTORY", f"Time: {str(completed_time)}s", "next boss")
+    def display_menu(self, completed_time):
+        return super().display_menu("VICTORY", f"Time: {self.format_time(completed_time)}", "next boss", VICTORY_TEXT_COLOUR)
 
     
